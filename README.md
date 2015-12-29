@@ -12,7 +12,6 @@
 
 
 # 1. Swiftris Video
----
 - [View YouTube Video](https://www.youtube.com/watch?v=iPihhGjGUl4)
 
 ![movie](http://cfile2.uf.tistory.com/image/256F5E455682A38006330E)  
@@ -33,7 +32,6 @@
 
 
 # 3. Architecture
----
 - ViewController.swift
 - Swiftris.swift
 - GameView.swift  
