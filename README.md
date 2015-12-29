@@ -106,7 +106,7 @@ class Swiftris: NSObject {
 
 	...
 	
- 	// 터치 - 벽돌 왼쪽,오른쪽 이동, 벽돌 드랍 
+ 	// Move the brick to the left, right and Rotate the brick.
     func touch(touch:UITouch!) {
         guard self.gameState == GameState.PLAY else { return }
         guard let curretBrick = self.gameView.gameBoard.currentBrick else { return }
@@ -129,7 +129,7 @@ class Swiftris: NSObject {
         }
     }
 	
-	// 롱프레스 - 벽돌 드랍 
+	// Drop the brick.
  	func longPressed(longpressGesture:UILongPressGestureRecognizer!) {
         if self.gameState == GameState.PLAY {
 
@@ -147,8 +147,8 @@ class Swiftris: NSObject {
 
 
 ## GameScore    
-- 게임점수는 클리어되는 라인수에 따라 10점, 30점, 60점, 100점이 지급됩니다.    
-- 예제에서는 레벨클리어 기능을 제공하지 않았지만, 자신만의 레벨클리어 기능을 구현해보세요.
+- Game score is depending on number of lines are cleared. 10, 30, 60, 100 points.
+- This game did not implement the feature level. please implement your own.
 
 ```    
 
@@ -187,7 +187,7 @@ class Brick: NSObject {
 	static var nextBricks = [Brick]()
     static var nextBrickCount = 3
     
-    // 벽돌 대기열에서 첫번째(index 0) 벽돌을 사용하고, 대기열을 3개로 채웁니다.
+    // use the first brick from next brick queue and fill three.
     static func generate() -> Brick! {
         while self.nextBricks.count < self.nextBrickCount {
             self.nextBricks.append(self.newBrick())
