@@ -31,22 +31,74 @@ class GameView: UIView {
         self.addSubview(self.nextBrick)
         
         // layout gameboard
-        let metrics = ["width":GameBoard.width,"height":GameBoard.height]
-        let views   = ["gameBoard":self.gameBoard, "nextBrick":self.nextBrick, "gameScore":self.gameScore]
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-[gameBoard(width)]", options: [], metrics:metrics , views:views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[gameBoard(height)]-|", options: [], metrics:metrics , views:views))
+        let metrics = [
+            "width":GameBoard.width,
+            "height":GameBoard.height
+        ]
+        
+        let views   = [
+            "gameBoard":self.gameBoard,
+            "nextBrick":self.nextBrick,
+            "gameScore":self.gameScore
+        ]
+        
+        // layout board
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "H:|-[gameBoard(width)]",
+                options: [],
+                metrics:metrics ,
+                views:views)
+        )
+        
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "V:[gameBoard(height)]-|",
+                options: [],
+                metrics:metrics ,
+                views:views)
+        )
         
         // layout score
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-[gameScore]-|", options: [], metrics:nil , views:views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-20-[gameScore]-[gameBoard]", options: [], metrics:nil , views:views))
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "H:|-[gameScore]-|",
+                options: [],
+                metrics:nil ,
+                views:views)
+        )
+        
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "V:|-20-[gameScore]-[gameBoard]",
+                options: [],
+                metrics:nil ,
+                views:views)
+        )
 
         // layout next brick
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[gameBoard]-[nextBrick]-|", options: NSLayoutFormatOptions.AlignAllTop, metrics:nil , views:views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[nextBrick]-|", options: [], metrics:nil , views:views))
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "H:[gameBoard]-[nextBrick]-|",
+                options: NSLayoutFormatOptions.AlignAllTop,
+                metrics:nil ,
+                views:views))
+        
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "V:[nextBrick]-|",
+                options: [],
+                metrics:nil ,
+                views:views)
+        )
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        debugPrint("deinit GameView")
     }
     
     func clear() {

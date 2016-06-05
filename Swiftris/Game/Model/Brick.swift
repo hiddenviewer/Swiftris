@@ -23,7 +23,7 @@ class Brick: NSObject {
     var points = [CGPoint]()
     var tx:Int = 5
     var ty:Int = 0
-    var color:UIColor!
+    var color = UIColor.clearColor()
     var brickType = Brick.bricks[0]
     
     static var nextBricks = [Brick]()

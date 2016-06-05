@@ -10,12 +10,17 @@ import UIKit
 
 class NextBrick: UIView {
 
-    var gameButton:UIButton!
+    private var gameButton = UIButton()
+    private var stopButton = UIButton()
     
     override init(frame: CGRect) {
         super.init(frame: CGRectZero)
         self.backgroundColor = UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.0)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "newBrickGenerated", name: Swiftris.NewBrickDidGenerateNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(NextBrick.newBrickGenerated),
+                                                         name: Swiftris.NewBrickDidGenerateNotification,
+                                                         object: nil)
         
         self.makeGameButton()
     }
@@ -24,84 +29,132 @@ class NextBrick: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     func newBrickGenerated() {
         self.setNeedsDisplay()
     }
     
      override func drawRect(rect: CGRect) {
-        let widthSize = Int(rect.size.width)/GameBoard.smallBrickSize
-        let gap  = 4
-        var top  = 2
+        let gap = 4 * CGFloat(GameBoard.smallBrickSize)
+        var top = 2 * CGFloat(GameBoard.smallBrickSize)
     
         for brick in Brick.nextBricks {
-            let left = (widthSize - Int(brick.right().x))/2
+            let brickWidth = (brick.right().x+1) * CGFloat(GameBoard.smallBrickSize)
+            let brickHeight = brick.bottom().y * CGFloat(GameBoard.smallBrickSize)
+            let left = (rect.size.width - brickWidth)/2
             for p in brick.points {
-                let r = Int(p.y) + top
-                let c = Int(p.x) + left
-                self.drawAtRow(r, c: c, color:brick.color)
+                let r = Int(p.y)
+                let c = Int(p.x)
+                self.drawAt(top: top, left:left, row:r, col: c, color:brick.color)
             }
-            top += Int(brick.bottom().y)
+            top += brickHeight
             top += gap
         }
     }
     
-    func drawAtRow(r:Int, c:Int, color:UIColor!) {
+    func drawAt(top top:CGFloat, left:CGFloat, row:Int, col:Int, color:UIColor) {
         let context = UIGraphicsGetCurrentContext()
-        let block = CGRectMake(CGFloat((c+1)*GameBoard.gap + c*GameBoard.smallBrickSize),
-            CGFloat((r+1)*GameBoard.gap + r*GameBoard.smallBrickSize),
+        let block = CGRectMake(
+            left + CGFloat(col*GameBoard.gap + col*GameBoard.smallBrickSize),
+            top + CGFloat(row*GameBoard.gap + row*GameBoard.smallBrickSize),
             CGFloat(GameBoard.smallBrickSize),
-            CGFloat(GameBoard.smallBrickSize))
+            CGFloat(GameBoard.smallBrickSize)
+        )
         
         if color == GameBoard.EmptyColor {
             GameBoard.strokeColor.set()
             CGContextFillRect(context, block)
         } else {
             color.set()
-            let path = UIBezierPath(roundedRect: block, cornerRadius: 1)
-            path.fill()
+            UIBezierPath(roundedRect: block, cornerRadius: 1).fill()
         }
     }
     
     func makeGameButton() {
         // play and pause button
-        let gameButton = UIButton(frame: CGRectZero)
-        gameButton.translatesAutoresizingMaskIntoConstraints = false
-        gameButton.layer.borderColor = UIColor.whiteColor().CGColor
-        gameButton.layer.borderWidth = 2
-        gameButton.layer.cornerRadius = 5
-        gameButton.titleLabel?.font = Swiftris.GameFont(18)
-        gameButton.setTitle("Play", forState: UIControlState.Normal)
-        gameButton.addTarget(self, action: "changeGameState:", forControlEvents: UIControlEvents.TouchUpInside)
-        self.addSubview(gameButton)
-        self.gameButton = gameButton
+        self.gameButton.translatesAutoresizingMaskIntoConstraints = false
+        self.gameButton.layer.borderColor = UIColor.whiteColor().CGColor
+        self.gameButton.layer.borderWidth = 2
+        self.gameButton.layer.cornerRadius = 5
+        self.gameButton.titleLabel?.font = Swiftris.GameFont(18)
+        self.gameButton.setTitle("Play", forState: UIControlState.Normal)
+        self.gameButton.addTarget(self, action: #selector(NextBrick.changeGameState(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        self.addSubview(self.gameButton)
         
-        let stopButton = UIButton(frame: CGRectZero)
-        stopButton.translatesAutoresizingMaskIntoConstraints = false
-        stopButton.layer.borderColor = UIColor.whiteColor().CGColor
-        stopButton.layer.borderWidth = 2
-        stopButton.addTarget(self, action: "gameStop:", forControlEvents: UIControlEvents.TouchUpInside)
-        stopButton.layer.cornerRadius = 5
-        stopButton.titleLabel?.font = Swiftris.GameFont(18)
-        stopButton.setTitle("Stop", forState: UIControlState.Normal)
-        self.addSubview(stopButton)
+        self.stopButton.translatesAutoresizingMaskIntoConstraints = false
+        self.stopButton.layer.borderColor = UIColor.whiteColor().CGColor
+        self.stopButton.layer.borderWidth = 2
+        self.stopButton.addTarget(self, action: #selector(NextBrick.gameStop(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        self.stopButton.layer.cornerRadius = 5
+        self.stopButton.titleLabel?.font = Swiftris.GameFont(18)
+        self.stopButton.setTitle("Stop", forState: UIControlState.Normal)
+        self.addSubview(self.stopButton)
         
-        let views = ["gameButton":gameButton, "superView":self, "stopButton":stopButton]
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[gameButton(60)]", options: [], metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[gameButton(60)]-20-|", options: [], metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[superView]-(<=0)-[gameButton]", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil , views: views))
+        let views = [
+            "gameButton":gameButton,
+            "selfView":self,
+            "stopButton":stopButton
+        ]
         
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[stopButton(60)]", options: [], metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[stopButton(60)]-10-[gameButton]", options: NSLayoutFormatOptions.AlignAllLeft, metrics: nil, views: views))
-    }
-    func gameStop(sender:UIButton!) {
-        NSNotificationCenter.defaultCenter().postNotificationName(Swiftris.GameStateChangeNotification, object: nil, userInfo: ["gameState":NSNumber(integer: GameState.STOP.rawValue)])
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "H:[gameButton(60)]",
+                options: [],
+                metrics: nil,
+                views: views)
+        )
+        
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "V:[gameButton(60)]-20-|",
+                options: [],
+                metrics: nil,
+                views: views)
+        )
+        
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+            "V:[selfView]-(<=0)-[gameButton]",
+            options: NSLayoutFormatOptions.AlignAllCenterX,
+            metrics: nil ,
+            views: views)
+        )
+        
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+            "H:[stopButton(60)]",
+            options: [],
+            metrics: nil,
+            views: views)
+        )
+        
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
+            "V:[stopButton(60)]-10-[gameButton]",
+            options: NSLayoutFormatOptions.AlignAllLeft,
+            metrics: nil, views: views)
+        )
     }
     
-    func changeGameState(sender:UIButton!) {
+    func gameStop(sender:UIButton) {
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            Swiftris.GameStateChangeNotification,
+            object: nil,
+            userInfo: ["gameState":NSNumber(integer: GameState.STOP.rawValue)]
+        )
+    }
+    
+    func changeGameState(sender:UIButton) {
         sender.selected = !sender.selected
         let gameState = self.update(sender.selected)
-        NSNotificationCenter.defaultCenter().postNotificationName(Swiftris.GameStateChangeNotification, object: nil, userInfo: ["gameState":NSNumber(integer: gameState.rawValue)])
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            Swiftris.GameStateChangeNotification,
+            object: nil,
+            userInfo: ["gameState":NSNumber(integer: gameState.rawValue)]
+        )
     }
+    
     func update(selected:Bool) -> GameState {
         var gameState = GameState.PLAY
         if selected {

@@ -34,7 +34,7 @@ class GameBoard: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func generateRow() -> [UIColor]! {
+    private func generateRow() -> [UIColor]! {
         var row = [UIColor]()
         for _ in 0..<GameBoard.cols {
             row.append(GameBoard.EmptyColor)
@@ -44,29 +44,38 @@ class GameBoard: UIView {
 
     func generateBrick() {
         self.currentBrick = Brick.generate()
-        NSNotificationCenter.defaultCenter().postNotificationName(Swiftris.NewBrickDidGenerateNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            Swiftris.NewBrickDidGenerateNotification,
+            object: nil
+        )
     }
     
     
     func dropBrick() {
-        while self.canMoveDown() {
-            self.currentBrick!.moveDown()
+        guard let currentBrick = self.currentBrick else { return }
+        
+        while self.canMoveDown(currentBrick) {
+            currentBrick.moveDown()
             self.setNeedsDisplay()
         }
     }
     
     func rotateBrick() {
-        let rotatedBrick = self.currentBrick!.rotatedPoints()
-        if self.canRotate(rotatedBrick) {
-            self.currentBrick!.points = rotatedBrick
+        guard let currentBrick = self.currentBrick else { return }
+        
+        let rotatedPoints = currentBrick.rotatedPoints()
+        if self.canRotate(currentBrick, rotatedPoints: rotatedPoints) {
+            currentBrick.points = rotatedPoints
             self.setNeedsDisplay()
         }
     }
     
-    func canRotate(points:[CGPoint]) -> Bool {
-        for p in points {
-            let r = Int(p.y) + self.currentBrick!.ty
-            let c = Int(p.x) + self.currentBrick!.tx
+    func canRotate(brick:Brick, rotatedPoints:[CGPoint]) -> Bool {
+
+        for p in rotatedPoints {
+            let r = Int(p.y) + brick.ty
+            let c = Int(p.x) + brick.tx
             if r < 0 || r >= GameBoard.rows {
                 return false
             }
@@ -81,13 +90,13 @@ class GameBoard: UIView {
     }
     
     
-    func canMoveDown() -> Bool {
-        for p in self.currentBrick!.points {
-            let r = Int(p.y) + self.currentBrick!.ty + 1
+    func canMoveDown(brick:Brick) -> Bool {
+        for p in brick.points {
+            let r = Int(p.y) + brick.ty + 1
             if r >= GameBoard.rows {
                 return false
             }
-            let c = Int(p.x) + self.currentBrick!.tx
+            let c = Int(p.x) + brick.tx
             if self.board[r][c] !=  GameBoard.EmptyColor {
                 return false
             }
@@ -101,7 +110,7 @@ class GameBoard: UIView {
         
         var droppedBrick = false
         
-        if self.canMoveDown() {
+        if self.canMoveDown(currentBrick) {
             currentBrick.moveDown()
         } else {
             
@@ -131,14 +140,14 @@ class GameBoard: UIView {
         var lineCount = 0
         var linesToRemove = [Int]()
         
-        for var i=0; i < self.board.count; i++ {
+        for i in 0..<self.board.count {
             let row = self.board[i]
             let rows = row.filter { c -> Bool in
                 return c != GameBoard.EmptyColor
             }
             if rows.count == GameBoard.cols {
                 linesToRemove.append(i)
-                lineCount++
+                lineCount += 1
             }
         }
         for line in linesToRemove {
@@ -146,7 +155,11 @@ class GameBoard: UIView {
             self.board.insert(self.generateRow(), atIndex: 0)
         }
         
-        NSNotificationCenter.defaultCenter().postNotificationName(Swiftris.LineClearNotification, object: nil, userInfo: ["lineCount":NSNumber(integer: lineCount)])
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            Swiftris.LineClearNotification,
+            object: nil,
+            userInfo: ["lineCount":NSNumber(integer: lineCount)]
+        )
     }
     
     func updateX(x:Int) {

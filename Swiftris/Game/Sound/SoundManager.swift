@@ -11,9 +11,9 @@ import AVFoundation
 
 class SoundManager: NSObject {
    
-    var bgmPlayer:AVAudioPlayer?
-    var effectPlayer:AVAudioPlayer?
-    var gameOverPlayer:AVAudioPlayer?
+    private var bgmPlayer:AVAudioPlayer?
+    private var effectPlayer:AVAudioPlayer?
+    private var gameOverPlayer:AVAudioPlayer?
     
     override init() {
         super.init()
@@ -30,48 +30,51 @@ class SoundManager: NSObject {
         let session = AVAudioSession.sharedInstance()
         do {
             try session.setCategory(AVAudioSessionCategorySoloAmbient)
-        } catch _ {
-        }
-        
+        } catch {}
     }
     
-    func makePlayer(name:String, ofType:String) -> AVAudioPlayer? {
+    deinit {
+        debugPrint("deinit SoundManager")
+    }
+    
+    private func makePlayer(name:String, ofType:String) -> AVAudioPlayer? {
         if let path = NSBundle.mainBundle().pathForResource(name, ofType: ofType) {
             let url = NSURL(fileURLWithPath: path)
             do {
                 return try AVAudioPlayer(contentsOfURL: url)
-            } catch _ {
-                return nil
-            }
+            } catch {}
         }
         return nil
     }
     
     
     func playBGM() {
-        guard let player = self.bgmPlayer else { return }
-        player.play()
+        self.bgmPlayer?.play()
     }
+    
     func pauseBGM() {
-        guard let player = self.bgmPlayer else { return }
-        player.pause()
+        self.bgmPlayer?.pause()
     }
+    
     func stopBGM() {
-        guard let player = self.bgmPlayer else { return }
-        player.stop()
-        player.currentTime = 0
+        self.bgmPlayer?.stop()
+        self.bgmPlayer?.currentTime = 0
     }
     
     func dropBrick() {
-        guard let player = self.effectPlayer else { return }
-        player.prepareToPlay()
-        player.play()
+        self.effectPlayer?.prepareToPlay()
+        self.effectPlayer?.play()
     }
     
     func gameOver() {
-        guard let player = self.gameOverPlayer else { return }
-        player.prepareToPlay()
-        player.play()
+        self.gameOverPlayer?.prepareToPlay()
+        self.gameOverPlayer?.play()
+    }
+    
+    func clear() {
+        self.effectPlayer?.stop()
+        self.gameOverPlayer?.stop()
+        self.bgmPlayer?.stop()
     }
     
 }

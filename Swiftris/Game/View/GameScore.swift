@@ -14,11 +14,10 @@ class GameScore: UIView {
     var lineClearCount = 0
     var gameScore = 0
     
-    var levelLabel = UILabel(frame: CGRectZero)
-    var lineClearLabel = UILabel(frame: CGRectZero)
-    var scoreLabel = UILabel(frame: CGRectZero)
-    var scores = [0, 10, 30, 60, 100]
-    
+    private var levelLabel = UILabel()
+    private var lineClearLabel = UILabel()
+    private var scoreLabel = UILabel()
+    private var scores = [0, 10, 30, 60, 100]
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,35 +25,59 @@ class GameScore: UIView {
         
         self.levelLabel.translatesAutoresizingMaskIntoConstraints = false
         self.levelLabel.textColor = UIColor.whiteColor()
-        self.levelLabel.text = "Level: 1"
+        self.levelLabel.text = "Level: \(self.gameLevel)"
         self.levelLabel.font = Swiftris.GameFont(20)
-        self.levelLabel.invalidateIntrinsicContentSize()
+        self.levelLabel.adjustsFontSizeToFitWidth = true
+        self.levelLabel.minimumScaleFactor = 0.9
         self.addSubview(self.levelLabel)
         
         self.lineClearLabel.translatesAutoresizingMaskIntoConstraints = false
         self.lineClearLabel.textColor = UIColor.whiteColor()
         self.lineClearLabel.text = "Lines: \(self.lineClearCount)"
-        self.lineClearLabel.invalidateIntrinsicContentSize()
         self.lineClearLabel.font = Swiftris.GameFont(20)
+        self.lineClearLabel.adjustsFontSizeToFitWidth = true
+        self.lineClearLabel.minimumScaleFactor = 0.9
         self.addSubview(self.lineClearLabel)
         
         self.scoreLabel = UILabel(frame: CGRectZero)
         self.scoreLabel.translatesAutoresizingMaskIntoConstraints = false
         self.scoreLabel.textColor = UIColor.whiteColor()
         self.scoreLabel.text = "Score: \(self.gameScore)"
-        self.scoreLabel.invalidateIntrinsicContentSize()
         self.scoreLabel.font = Swiftris.GameFont(20)
+        self.scoreLabel.adjustsFontSizeToFitWidth = true
+        self.scoreLabel.minimumScaleFactor = 0.9
         self.addSubview(self.scoreLabel)
-     
-        let views = ["level":self.levelLabel, "lineClear":self.lineClearLabel, "score":self.scoreLabel, "superView":self]
-        let metrics = ["spacer":50]
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-[level(80)]-(10)-[lineClear(100)]-(5)-[score(>=120)]-|", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: metrics, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("[superView]-(<=0)-[level]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: metrics, views: views))
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "lineClear:", name: Swiftris.LineClearNotification, object: nil)
+        let views = [
+            "level": self.levelLabel,
+            "lineClear": self.lineClearLabel,
+            "score": self.scoreLabel,
+            "selfView": self
+        ]
+        
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "H:|-[level(80)]-10-[lineClear(>=90)]-10-[score(lineClear)]-|",
+                options: NSLayoutFormatOptions.AlignAllCenterY,
+                metrics: nil,
+                views: views)
+        )
+        
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "[selfView]-(<=0)-[level]",
+                options: NSLayoutFormatOptions.AlignAllCenterY,
+                metrics: nil,
+                views: views)
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(GameScore.lineClear(_:)),
+                                                         name: Swiftris.LineClearNotification,
+                                                         object: nil)
     }
     
-    func lineClear(noti:NSNotification!) {
+    func lineClear(noti:NSNotification) {
         if let userInfo = noti.userInfo as? [String:NSNumber] {
             if let lineCount = userInfo["lineCount"] {
                 self.lineClearCount += lineCount.integerValue
@@ -64,9 +87,12 @@ class GameScore: UIView {
         }
     }
     
-
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
    func clear() {
@@ -74,10 +100,11 @@ class GameScore: UIView {
         self.lineClearCount = 0
         self.gameScore = 0
     }
+    
     func update() {
-        self.levelLabel.text = "Level: 1"
+        self.levelLabel.text = "Level: \(self.gameLevel)"
         self.lineClearLabel.text = "Lines: \(self.lineClearCount)"
         self.scoreLabel.text = "Score: \(self.gameScore)"
     }
-
 }
+

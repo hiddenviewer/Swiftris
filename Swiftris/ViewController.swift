@@ -8,40 +8,25 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate {
-
-    var gameView:GameView!
-    var swiftris:Swiftris!
+// this view controller not used.
+// entry view controller is SwiftrisViewController.
+class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.initializeGame()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    func initializeGame() {
-        self.gameView = GameView(self.view)
-        self.swiftris = Swiftris(gameView: self.gameView)
-    }
-    
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if let touch = touches.first  {
-            self.swiftris.touch(touch)
-        }
-    }
-    
-    func makePanGestureRecognizer() {
-        let panGesture = UIPanGestureRecognizer(target: self, action: "panned:")
-        panGesture.delegate = self
-        self.view.addGestureRecognizer(panGesture)
-    }
-    
     override func prefersStatusBarHidden() -> Bool {
         return false
     }
     
+    @IBAction func startGame(sender: UIButton) {
+        let swiftrisViewController = SwiftrisViewController()
+        self.presentViewController(swiftrisViewController, animated: true, completion: nil)
+    }
 }
 
