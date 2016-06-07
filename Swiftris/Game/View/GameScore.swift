@@ -99,6 +99,7 @@ class GameScore: UIView {
         self.gameLevel = 0
         self.lineClearCount = 0
         self.gameScore = 0
+        self.update()
     }
     
     func update() {
