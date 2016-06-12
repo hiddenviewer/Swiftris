@@ -43,7 +43,7 @@ class Brick: NSObject {
         let index = Int(arc4random_uniform(UInt32(self.bricks.count)))
         let brickType = bricks[index]
         let brick = Brick(brickType)
-        brick.ty = -Int(brick.bottom().y)
+        brick.ty = -brick.vertical()
         return brick
     }
     
@@ -183,6 +183,11 @@ class Brick: NSObject {
             }
         }
         return top
+    }
+    
+    // vertical length
+    func vertical() -> Int {
+        return Int(self.bottom().y) + 1
     }
 
 }

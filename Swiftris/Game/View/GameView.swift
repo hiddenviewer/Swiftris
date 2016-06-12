@@ -13,6 +13,7 @@ class GameView: UIView {
     var gameScore = GameScore(frame:CGRectZero)
     var gameBoard = GameBoard(frame:CGRectZero)
     var nextBrick = NextBrick(frame:CGRectZero)
+    var rotateButton = GameButton(title: "R", frame: CGRectZero)
     
     init(_ superView:UIView) {
         super.init(frame: superView.frame)
@@ -21,14 +22,17 @@ class GameView: UIView {
         
         // background color
         self.backgroundColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.0)
+        self.rotateButton.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.3)
         
         self.gameBoard.translatesAutoresizingMaskIntoConstraints = false
         self.gameScore.translatesAutoresizingMaskIntoConstraints = false
         self.nextBrick.translatesAutoresizingMaskIntoConstraints = false
+        self.rotateButton.translatesAutoresizingMaskIntoConstraints = false
         
         self.addSubview(self.gameBoard)
         self.addSubview(self.gameScore)
         self.addSubview(self.nextBrick)
+        self.addSubview(self.rotateButton)
         
         // layout gameboard
         let metrics = [
@@ -39,7 +43,8 @@ class GameView: UIView {
         let views   = [
             "gameBoard":self.gameBoard,
             "nextBrick":self.nextBrick,
-            "gameScore":self.gameScore
+            "gameScore":self.gameScore,
+            "rotateButton":self.rotateButton
         ]
         
         // layout board
@@ -91,6 +96,23 @@ class GameView: UIView {
                 metrics:nil ,
                 views:views)
         )
+        
+        // layout rotate button.
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "H:|-2-[rotateButton(50)]",
+                options: [],
+                metrics:nil ,
+                views:views)
+        )
+        
+        self.addConstraints(
+            NSLayoutConstraint.constraintsWithVisualFormat(
+                "V:[rotateButton(50)]-2-|",
+                options: [],
+                metrics:nil ,
+                views:views)
+        )
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -104,11 +126,11 @@ class GameView: UIView {
     func clear() {
         self.gameScore.clear()
         self.gameBoard.clear()
-        self.nextBrick.clear()
+        self.nextBrick.prepare()
     }
     func prepare() {
         self.gameScore.clear()
         self.gameBoard.clear()
-        self.nextBrick.prepare()
+        self.nextBrick.clearNextBricks()
     }
 }

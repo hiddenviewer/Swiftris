@@ -179,12 +179,13 @@ class GameBoard: UIView {
             var canMoveRight = Int(currentBrick.right().x) + currentBrick.tx + 1 <= GameBoard.cols-1
             if canMoveRight {
                 for p in currentBrick.points {
-                    // not visible brick points
-                    if currentBrick.ty < 0 {
-                        continue
-                    }
                     let r = Int(p.y) + currentBrick.ty
                     let c = Int(p.x) + currentBrick.tx + 1
+                    
+                    // not visible brick point
+                    if r < 0 {
+                        continue
+                    }
                     if self.board[r][c] !=  GameBoard.EmptyColor {
                         canMoveRight = false
                         break
@@ -199,12 +200,13 @@ class GameBoard: UIView {
             var canMoveLeft = Int(currentBrick.left().x) + currentBrick.tx - 1 >= 0
             if canMoveLeft {
                 for p in currentBrick.points {
-                    // not visible brick points
-                    if currentBrick.ty < 0 {
-                        continue
-                    }
                     let r = Int(p.y) + currentBrick.ty
                     let c = Int(p.x) + currentBrick.tx - 1
+                    
+                    // not visible brick point
+                    if r < 0 {
+                        continue
+                    }
                     if self.board[r][c] !=  GameBoard.EmptyColor {
                         canMoveLeft = false
                         break

@@ -10,8 +10,8 @@ import UIKit
 
 class NextBrick: UIView {
 
-    private var gameButton = UIButton()
-    private var stopButton = UIButton()
+    private var gameButton = GameButton(title: "Play", frame: CGRectZero)
+    private var stopButton = GameButton(title: "Stop", frame: CGRectZero)
     
     override init(frame: CGRect) {
         super.init(frame: CGRectZero)
@@ -76,21 +76,11 @@ class NextBrick: UIView {
     func makeGameButton() {
         // play and pause button
         self.gameButton.translatesAutoresizingMaskIntoConstraints = false
-        self.gameButton.layer.borderColor = UIColor.whiteColor().CGColor
-        self.gameButton.layer.borderWidth = 2
-        self.gameButton.layer.cornerRadius = 5
-        self.gameButton.titleLabel?.font = Swiftris.GameFont(18)
-        self.gameButton.setTitle("Play", forState: UIControlState.Normal)
         self.gameButton.addTarget(self, action: #selector(NextBrick.changeGameState(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         self.addSubview(self.gameButton)
         
         self.stopButton.translatesAutoresizingMaskIntoConstraints = false
-        self.stopButton.layer.borderColor = UIColor.whiteColor().CGColor
-        self.stopButton.layer.borderWidth = 2
         self.stopButton.addTarget(self, action: #selector(NextBrick.gameStop(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        self.stopButton.layer.cornerRadius = 5
-        self.stopButton.titleLabel?.font = Swiftris.GameFont(18)
-        self.stopButton.setTitle("Stop", forState: UIControlState.Normal)
         self.addSubview(self.stopButton)
         
         let views = [
@@ -168,13 +158,17 @@ class NextBrick: UIView {
     }
     
     func prepare() {
-        self.update(self.gameButton.selected)
-        Brick.nextBricks = [Brick]()
-        self.setNeedsDisplay()
+        self.clearButtons()
+        self.clearNextBricks()
     }
     
-    func clear() {
+    func clearButtons() {
         self.gameButton.selected = false
-        self.prepare()
+        self.update(self.gameButton.selected)
+    }
+    
+    func clearNextBricks() {
+        Brick.nextBricks = [Brick]()
+        self.setNeedsDisplay()
     }
 }

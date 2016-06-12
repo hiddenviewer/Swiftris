@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8A411BA91D02DFCF00EDB246 /* SwiftrisViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A411BA81D02DFCF00EDB246 /* SwiftrisViewController.swift */; };
+		8A635F861D0D60F800D9AEAE /* GameButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A635F851D0D60F800D9AEAE /* GameButton.swift */; };
 		8A8E9FF51B540E4000F5E25B /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8E9FF41B540E4000F5E25B /* SoundManager.swift */; };
 		8A8E9FFB1B540E7500F5E25B /* fall.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A8E9FF71B540E7500F5E25B /* fall.mp3 */; };
 		8A8E9FFC1B540E7500F5E25B /* gameover.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A8E9FF81B540E7500F5E25B /* gameover.mp3 */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		8A411BA81D02DFCF00EDB246 /* SwiftrisViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftrisViewController.swift; sourceTree = "<group>"; };
+		8A635F851D0D60F800D9AEAE /* GameButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameButton.swift; path = View/GameButton.swift; sourceTree = "<group>"; };
 		8A8E9FF41B540E4000F5E25B /* SoundManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		8A8E9FF71B540E7500F5E25B /* fall.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = fall.mp3; sourceTree = "<group>"; };
 		8A8E9FF81B540E7500F5E25B /* gameover.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = gameover.mp3; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				8A8EA0031B540EA000F5E25B /* GameBoard.swift */,
 				8A8EA0041B540EA000F5E25B /* GameScore.swift */,
 				8A8EA0051B540EA000F5E25B /* NextBrick.swift */,
+				8A635F851D0D60F800D9AEAE /* GameButton.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -303,6 +306,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A8EA0081B540EA000F5E25B /* NextBrick.swift in Sources */,
+				8A635F861D0D60F800D9AEAE /* GameButton.swift in Sources */,
 				8A8EA0071B540EA000F5E25B /* GameScore.swift in Sources */,
 				8A8EA0011B540E8100F5E25B /* Brick.swift in Sources */,
 				D0C634691B463B60003D48F1 /* Swiftris.swift in Sources */,

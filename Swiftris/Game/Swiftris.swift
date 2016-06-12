@@ -48,6 +48,8 @@ class Swiftris: NSObject {
         self.addLongPressAction(#selector(Swiftris.longPressed(_:)), toView:self.gameView.gameBoard)
         
         self.addGameStateChangeNotificationAction(#selector(Swiftris.gameStateChange(_:)))
+        
+        self.addRotateAction(#selector(Swiftris.rotateBrick), toButton: self.gameView.rotateButton)
     }
     
     func deinitGame() {
@@ -149,30 +151,30 @@ class Swiftris: NSObject {
         self.soundManager.stopBGM()
         self.soundManager.gameOver()
         
-        self.gameView.nextBrick.clear()
+        self.gameView.nextBrick.clearButtons()
     }
     
     // game interaction
     func touch(touch:UITouch) {
         guard self.gameState == GameState.PLAY else { return }
-        guard let curretBrick = self.gameView.gameBoard.currentBrick else { return }
+        guard let _ = self.gameView.gameBoard.currentBrick else { return }
         
         let p = touch.locationInView(self.gameView.gameBoard)
         
         let half = self.gameView.gameBoard.centerX
         
-        let top  = curretBrick.top()
-        let topY = CGFloat( (Int(top.y) + curretBrick.ty) * GameBoard.brickSize )
-
-        if p.y > topY  {
-            if p.x > half {
-                self.gameView.gameBoard.updateX(1)
-            } else if p.x < half {
-                self.gameView.gameBoard.updateX(-1)
-            }
-        } else   {
-            self.gameView.gameBoard.rotateBrick()
+        if p.x > half {
+            self.gameView.gameBoard.updateX(1)
+        } else if p.x < half {
+            self.gameView.gameBoard.updateX(-1)
         }
+    }
+    
+    func rotateBrick() {
+        guard self.gameState == GameState.PLAY else { return }
+        guard let _ = self.gameView.gameBoard.currentBrick else { return }
+        
+        self.gameView.gameBoard.rotateBrick()
     }
     
     private func addLongPressAction(action:Selector, toView view:UIView) {
@@ -189,4 +191,9 @@ class Swiftris: NSObject {
     private func removeGameStateChangeNotificationAction() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
+    private func addRotateAction(action:Selector, toButton button:GameButton) {
+        button.addTarget(self, action: action, forControlEvents: UIControlEvents.TouchUpInside)
+    }
+    
 }
