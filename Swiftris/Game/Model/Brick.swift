@@ -39,14 +39,15 @@ class Brick: NSObject {
         BrickType.O(UIColor(red:0.88, green:0.69, blue:0.25, alpha:1.0))
     ]
 
-    static func newBrick() -> Brick! {
+    static func newBrick() -> Brick {
         let index = Int(arc4random_uniform(UInt32(self.bricks.count)))
         let brickType = bricks[index]
         let brick = Brick(brickType)
+        brick.ty = -Int(brick.bottom().y)
         return brick
     }
     
-    static func generate() -> Brick! {
+    static func generate() -> Brick {
         while self.nextBricks.count < self.nextBrickCount {
             self.nextBricks.append(self.newBrick())
         }

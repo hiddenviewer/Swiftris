@@ -93,6 +93,12 @@ class GameBoard: UIView {
     func canMoveDown(brick:Brick) -> Bool {
         for p in brick.points {
             let r = Int(p.y) + brick.ty + 1
+            
+            // not visible brick points
+            if r < 0 {
+                continue
+            }
+            // reach to bottom
             if r >= GameBoard.rows {
                 return false
             }
@@ -119,8 +125,11 @@ class GameBoard: UIView {
             for p in currentBrick.points {
                 let r = Int(p.y) + currentBrick.ty
                 let c = Int(p.x) + currentBrick.tx
-                if self.board[r][c] != GameBoard.EmptyColor {
-                    // game over
+                
+                // check game over
+                // can't move down and brick is out of top bound.
+                if r < 0 {
+                    self.setNeedsDisplay()
                     return (true, false)
                 }
                 self.board[r][c] = currentBrick.color
@@ -169,7 +178,11 @@ class GameBoard: UIView {
         if x > 0 {
             var canMoveRight = Int(currentBrick.right().x) + currentBrick.tx + 1 <= GameBoard.cols-1
             if canMoveRight {
-                for p in self.currentBrick!.points {
+                for p in currentBrick.points {
+                    // not visible brick points
+                    if currentBrick.ty < 0 {
+                        continue
+                    }
                     let r = Int(p.y) + currentBrick.ty
                     let c = Int(p.x) + currentBrick.tx + 1
                     if self.board[r][c] !=  GameBoard.EmptyColor {
@@ -186,6 +199,10 @@ class GameBoard: UIView {
             var canMoveLeft = Int(currentBrick.left().x) + currentBrick.tx - 1 >= 0
             if canMoveLeft {
                 for p in currentBrick.points {
+                    // not visible brick points
+                    if currentBrick.ty < 0 {
+                        continue
+                    }
                     let r = Int(p.y) + currentBrick.ty
                     let c = Int(p.x) + currentBrick.tx - 1
                     if self.board[r][c] !=  GameBoard.EmptyColor {
@@ -215,7 +232,10 @@ class GameBoard: UIView {
         for p in currentBrick.points {
             let r = Int(p.y) + currentBrick.ty
             let c = Int(p.x) + currentBrick.tx
-            self.drawAtRow(r, col: c, color: currentBrick.color)
+            // (r >= 0) condition enable to draw partial brick
+            if r >= 0 {
+                self.drawAtRow(r, col: c, color: currentBrick.color)
+            }
         }
     }
 
