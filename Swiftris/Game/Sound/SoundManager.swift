@@ -11,9 +11,9 @@ import AVFoundation
 
 class SoundManager: NSObject {
    
-    private var bgmPlayer:AVAudioPlayer?
-    private var effectPlayer:AVAudioPlayer?
-    private var gameOverPlayer:AVAudioPlayer?
+    fileprivate var bgmPlayer:AVAudioPlayer?
+    fileprivate var effectPlayer:AVAudioPlayer?
+    fileprivate var gameOverPlayer:AVAudioPlayer?
     
     override init() {
         super.init()
@@ -37,11 +37,11 @@ class SoundManager: NSObject {
         debugPrint("deinit SoundManager")
     }
     
-    private func makePlayer(name:String, ofType:String) -> AVAudioPlayer? {
-        if let path = NSBundle.mainBundle().pathForResource(name, ofType: ofType) {
-            let url = NSURL(fileURLWithPath: path)
+    fileprivate func makePlayer(_ name:String, ofType:String) -> AVAudioPlayer? {
+        if let path = Bundle.main.path(forResource: name, ofType: ofType) {
+            let url = URL(fileURLWithPath: path)
             do {
-                return try AVAudioPlayer(contentsOfURL: url)
+                return try AVAudioPlayer(contentsOf: url)
             } catch {}
         }
         return nil

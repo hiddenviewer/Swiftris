@@ -13,11 +13,11 @@ class GameBoard: UIView {
     static let rows = 22
     static let cols = 10
     static let gap = 1
-    static let brickSize = Int(UIScreen.mainScreen().bounds.size.width*(24/375.0))
-    static let smallBrickSize = Int(UIScreen.mainScreen().bounds.size.width*(18/375.0))
+    static let brickSize = Int(UIScreen.main.bounds.size.width*(24/375.0))
+    static let smallBrickSize = Int(UIScreen.main.bounds.size.width*(18/375.0))
     static let width  = GameBoard.brickSize * GameBoard.cols + GameBoard.gap * (GameBoard.cols+1)
     static let height = GameBoard.brickSize * GameBoard.rows + GameBoard.gap * (GameBoard.rows+1)
-    static let EmptyColor = UIColor.blackColor()
+    static let EmptyColor = UIColor.black
     static let strokeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
     
     var board = [[UIColor]]()
@@ -34,7 +34,7 @@ class GameBoard: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func generateRow() -> [UIColor]! {
+    fileprivate func generateRow() -> [UIColor]! {
         var row = [UIColor]()
         for _ in 0..<GameBoard.cols {
             row.append(GameBoard.EmptyColor)
@@ -45,8 +45,8 @@ class GameBoard: UIView {
     func generateBrick() {
         self.currentBrick = Brick.generate()
         
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            Swiftris.NewBrickDidGenerateNotification,
+        NotificationCenter.default.post(
+            name: Notification.Name(rawValue: Swiftris.NewBrickDidGenerateNotification),
             object: nil
         )
     }
@@ -71,7 +71,7 @@ class GameBoard: UIView {
         }
     }
     
-    func canRotate(brick:Brick, rotatedPoints:[CGPoint]) -> Bool {
+    func canRotate(_ brick:Brick, rotatedPoints:[CGPoint]) -> Bool {
 
         for p in rotatedPoints {
             let r = Int(p.y) + brick.ty
@@ -90,7 +90,7 @@ class GameBoard: UIView {
     }
     
     
-    func canMoveDown(brick:Brick) -> Bool {
+    func canMoveDown(_ brick:Brick) -> Bool {
         for p in brick.points {
             let r = Int(p.y) + brick.ty + 1
             
@@ -160,18 +160,18 @@ class GameBoard: UIView {
             }
         }
         for line in linesToRemove {
-            self.board.removeAtIndex(line)
-            self.board.insert(self.generateRow(), atIndex: 0)
+            self.board.remove(at: line)
+            self.board.insert(self.generateRow(), at: 0)
         }
         
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            Swiftris.LineClearNotification,
+        NotificationCenter.default.post(
+            name: Notification.Name(rawValue: Swiftris.LineClearNotification),
             object: nil,
-            userInfo: ["lineCount":NSNumber(integer: lineCount)]
+            userInfo: ["lineCount":NSNumber(value: lineCount as Int)]
         )
     }
     
-    func updateX(x:Int) {
+    func updateX(_ x:Int) {
         
         guard let currentBrick = self.currentBrick else { return }
         
@@ -221,7 +221,7 @@ class GameBoard: UIView {
     }
 
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         // draw game board
         for r in  0..<GameBoard.rows {
             for c in 0..<GameBoard.cols {
@@ -242,16 +242,16 @@ class GameBoard: UIView {
     }
 
     
-    func drawAtRow(r:Int, col c:Int, color:UIColor!) {
+    func drawAtRow(_ r:Int, col c:Int, color:UIColor!) {
         let context = UIGraphicsGetCurrentContext()
-        let block = CGRectMake(CGFloat((c+1)*GameBoard.gap + c*GameBoard.brickSize),
-            CGFloat((r+1)*GameBoard.gap + r*GameBoard.brickSize),
-            CGFloat(GameBoard.brickSize),
-            CGFloat(GameBoard.brickSize))
+        let block = CGRect(x: CGFloat((c+1)*GameBoard.gap + c*GameBoard.brickSize),
+            y: CGFloat((r+1)*GameBoard.gap + r*GameBoard.brickSize),
+            width: CGFloat(GameBoard.brickSize),
+            height: CGFloat(GameBoard.brickSize))
         
             if color == GameBoard.EmptyColor {
                 GameBoard.strokeColor.set()
-                CGContextFillRect(context, block)
+                context?.fill(block)
             } else {
                 color.set()
                 UIBezierPath(roundedRect: block, cornerRadius: 1).fill()

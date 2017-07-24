@@ -10,10 +10,10 @@ import UIKit
 
 class GameView: UIView {
 
-    var gameScore = GameScore(frame:CGRectZero)
-    var gameBoard = GameBoard(frame:CGRectZero)
-    var nextBrick = NextBrick(frame:CGRectZero)
-    var rotateButton = GameButton(title: "R", frame: CGRectZero)
+    var gameScore = GameScore(frame:CGRect.zero)
+    var gameBoard = GameBoard(frame:CGRect.zero)
+    var nextBrick = NextBrick(frame:CGRect.zero)
+    var rotateButton = GameButton(title: "R", frame: CGRect.zero)
     
     init(_ superView:UIView) {
         super.init(frame: superView.frame)
@@ -22,7 +22,7 @@ class GameView: UIView {
         
         // background color
         self.backgroundColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.0)
-        self.rotateButton.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.3)
+        self.rotateButton.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         
         self.gameBoard.translatesAutoresizingMaskIntoConstraints = false
         self.gameScore.translatesAutoresizingMaskIntoConstraints = false
@@ -45,20 +45,20 @@ class GameView: UIView {
             "nextBrick":self.nextBrick,
             "gameScore":self.gameScore,
             "rotateButton":self.rotateButton
-        ]
+        ] as [String : Any]
         
         // layout board
         self.addConstraints(
-            NSLayoutConstraint.constraintsWithVisualFormat(
-                "H:|-[gameBoard(width)]",
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "H:|-[gameBoard(width)]",
                 options: [],
                 metrics:metrics ,
                 views:views)
         )
         
         self.addConstraints(
-            NSLayoutConstraint.constraintsWithVisualFormat(
-                "V:[gameBoard(height)]-|",
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "V:[gameBoard(height)]-|",
                 options: [],
                 metrics:metrics ,
                 views:views)
@@ -66,16 +66,16 @@ class GameView: UIView {
         
         // layout score
         self.addConstraints(
-            NSLayoutConstraint.constraintsWithVisualFormat(
-                "H:|-[gameScore]-|",
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "H:|-[gameScore]-|",
                 options: [],
                 metrics:nil ,
                 views:views)
         )
         
         self.addConstraints(
-            NSLayoutConstraint.constraintsWithVisualFormat(
-                "V:|-20-[gameScore]-[gameBoard]",
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "V:|-20-[gameScore]-[gameBoard]",
                 options: [],
                 metrics:nil ,
                 views:views)
@@ -83,15 +83,15 @@ class GameView: UIView {
 
         // layout next brick
         self.addConstraints(
-            NSLayoutConstraint.constraintsWithVisualFormat(
-                "H:[gameBoard]-[nextBrick]-|",
-                options: NSLayoutFormatOptions.AlignAllTop,
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "H:[gameBoard]-[nextBrick]-|",
+                options: NSLayoutFormatOptions.alignAllTop,
                 metrics:nil ,
                 views:views))
         
         self.addConstraints(
-            NSLayoutConstraint.constraintsWithVisualFormat(
-                "V:[nextBrick]-|",
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "V:[nextBrick]-|",
                 options: [],
                 metrics:nil ,
                 views:views)
@@ -99,16 +99,16 @@ class GameView: UIView {
         
         // layout rotate button.
         self.addConstraints(
-            NSLayoutConstraint.constraintsWithVisualFormat(
-                "H:|-2-[rotateButton(50)]",
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "H:|-2-[rotateButton(50)]",
                 options: [],
                 metrics:nil ,
                 views:views)
         )
         
         self.addConstraints(
-            NSLayoutConstraint.constraintsWithVisualFormat(
-                "V:[rotateButton(50)]-2-|",
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "V:[rotateButton(50)]-2-|",
                 options: [],
                 metrics:nil ,
                 views:views)

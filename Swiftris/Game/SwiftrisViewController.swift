@@ -30,13 +30,13 @@ class SwiftrisViewController: UIViewController {
         self.swiftris = Swiftris(gameView: gameView)
     }
 
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first  {
             self.swiftris.touch(touch)
         }
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return false
     }
 }

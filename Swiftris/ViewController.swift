@@ -20,13 +20,13 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return false
     }
     
-    @IBAction func startGame(sender: UIButton) {
+    @IBAction func startGame(_ sender: UIButton) {
         let swiftrisViewController = SwiftrisViewController()
-        self.presentViewController(swiftrisViewController, animated: true, completion: nil)
+        self.present(swiftrisViewController, animated: true, completion: nil)
     }
 }
 

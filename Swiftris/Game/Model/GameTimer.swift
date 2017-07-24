@@ -11,26 +11,26 @@ import UIKit
 class GameTimer: NSObject {
     
     var counter = 0
-    private var displayLink:CADisplayLink!
+    fileprivate var displayLink:CADisplayLink!
     
     init(target:AnyObject, selector:Selector) {
         self.displayLink = CADisplayLink(target: target, selector: selector)
         self.displayLink.frameInterval = 2
-        self.displayLink.paused = true
-        self.displayLink.addToRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        self.displayLink.isPaused = true
+        self.displayLink.add(to: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
     }
     
     func start() {
-        self.displayLink.paused = false
+        self.displayLink.isPaused = false
     }
     func pause() {
-        self.displayLink.paused = true
+        self.displayLink.isPaused = true
     }
     deinit {
         print("deinit GameTimer")
         
         if let link = self.displayLink {
-            link.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+            link.remove(from: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
         }
     }
     

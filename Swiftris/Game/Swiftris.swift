@@ -10,9 +10,9 @@ import UIKit
 
 
 enum GameState:Int {
-    case STOP = 0
-    case PLAY
-    case PAUSE
+    case stop = 0
+    case play
+    case pause
 }
 
 class Swiftris: NSObject {
@@ -22,7 +22,7 @@ class Swiftris: NSObject {
     static var GameStateChangeNotification             = "GameStateChangeNotification"
     
     // font
-    static func GameFont(fontSize:CGFloat) -> UIFont! {
+    static func GameFont(_ fontSize:CGFloat) -> UIFont! {
         return UIFont(name: "ChalkboardSE-Regular", size: fontSize)
     }
     
@@ -30,7 +30,7 @@ class Swiftris: NSObject {
     var gameTimer:GameTimer!
     var soundManager = SoundManager()
     
-    var gameState = GameState.STOP
+    var gameState = GameState.stop
     
     required init(gameView:GameView) {
         super.init()
@@ -42,7 +42,7 @@ class Swiftris: NSObject {
         debugPrint("deinit Swiftris")
     }
     
-    private func initGame() {
+    fileprivate func initGame() {
         self.gameTimer = GameTimer(target: self, selector: #selector(Swiftris.gameLoop))
         
         self.addLongPressAction(#selector(Swiftris.longPressed(_:)), toView:self.gameView.gameBoard)
@@ -61,33 +61,33 @@ class Swiftris: NSObject {
         self.gameView = nil
     }
     
-    func gameStateChange(noti:NSNotification) {
+    func gameStateChange(_ noti:Notification) {
         guard let userInfo = noti.userInfo as? [String:NSNumber] else { return }
         guard let rawValue = userInfo["gameState"] else { return }
-        guard let toState = GameState(rawValue: rawValue.integerValue) else { return }
+        guard let toState = GameState(rawValue: rawValue.intValue) else { return }
         
         switch self.gameState {
-        case .PLAY:
+        case .play:
             // pause
-            if toState == GameState.PAUSE {
+            if toState == GameState.pause {
                 self.pause()
             }
             // stop
-            if toState == GameState.STOP {
+            if toState == GameState.stop {
                 self.stop()
             }
-        case .PAUSE:
+        case .pause:
             // resume game
-            if toState == GameState.PLAY {
+            if toState == GameState.play {
                 self.play()
             }
             // stop
-            if toState == GameState.STOP {
+            if toState == GameState.stop {
                 self.stop()
             }
-        case .STOP:
+        case .stop:
             // start game
-            if toState == GameState.PLAY {
+            if toState == GameState.play {
                 self.prepare()
                 self.play()
             }
@@ -95,9 +95,9 @@ class Swiftris: NSObject {
     }
     
     
-    func longPressed(longpressGesture:UILongPressGestureRecognizer) {
-        if self.gameState == GameState.PLAY {
-            if longpressGesture.state == UIGestureRecognizerState.Began {
+    func longPressed(_ longpressGesture:UILongPressGestureRecognizer) {
+        if self.gameState == GameState.play {
+            if longpressGesture.state == UIGestureRecognizerState.began {
                 self.gameView.gameBoard.dropBrick()
             }
         }
@@ -107,7 +107,7 @@ class Swiftris: NSObject {
         self.update()
         self.gameView.setNeedsDisplay()
     }
-    private func update() {
+    fileprivate func update() {
 
         self.gameTimer.counter += 1
         
@@ -123,30 +123,30 @@ class Swiftris: NSObject {
         }
     }
     
-    private func prepare() {
+    fileprivate func prepare() {
         self.gameView.prepare()
         self.gameView.gameBoard.generateBrick()
     }
-    private func play() {
-        self.gameState = GameState.PLAY
+    fileprivate func play() {
+        self.gameState = GameState.play
         self.gameTimer.start()
         self.soundManager.playBGM()
     }
-    private func pause() {
-        self.gameState = GameState.PAUSE
+    fileprivate func pause() {
+        self.gameState = GameState.pause
         self.gameTimer.pause()
         self.soundManager.pauseBGM()
     }
-    private func stop() {
-        self.gameState = GameState.STOP
+    fileprivate func stop() {
+        self.gameState = GameState.stop
         self.gameTimer.pause()
         self.soundManager.stopBGM()
         
         self.gameView.clear()
     }
 
-    private func gameOver() {
-        self.gameState = GameState.STOP
+    fileprivate func gameOver() {
+        self.gameState = GameState.stop
         self.gameTimer.pause()
         self.soundManager.stopBGM()
         self.soundManager.gameOver()
@@ -155,11 +155,11 @@ class Swiftris: NSObject {
     }
     
     // game interaction
-    func touch(touch:UITouch) {
-        guard self.gameState == GameState.PLAY else { return }
+    func touch(_ touch:UITouch) {
+        guard self.gameState == GameState.play else { return }
         guard let _ = self.gameView.gameBoard.currentBrick else { return }
         
-        let p = touch.locationInView(self.gameView.gameBoard)
+        let p = touch.location(in: self.gameView.gameBoard)
         
         let half = self.gameView.gameBoard.centerX
         
@@ -171,29 +171,29 @@ class Swiftris: NSObject {
     }
     
     func rotateBrick() {
-        guard self.gameState == GameState.PLAY else { return }
+        guard self.gameState == GameState.play else { return }
         guard let _ = self.gameView.gameBoard.currentBrick else { return }
         
         self.gameView.gameBoard.rotateBrick()
     }
     
-    private func addLongPressAction(action:Selector, toView view:UIView) {
+    fileprivate func addLongPressAction(_ action:Selector, toView view:UIView) {
         let longpressGesture = UILongPressGestureRecognizer(target: self, action: action)
         view.addGestureRecognizer(longpressGesture)
     }
     
-    private func addGameStateChangeNotificationAction(action:Selector) {
-        NSNotificationCenter.defaultCenter().addObserver(self,
+    fileprivate func addGameStateChangeNotificationAction(_ action:Selector) {
+        NotificationCenter.default.addObserver(self,
                                                          selector: action,
-                                                         name: Swiftris.GameStateChangeNotification,
+                                                         name: NSNotification.Name(rawValue: Swiftris.GameStateChangeNotification),
                                                          object: nil)
     }
-    private func removeGameStateChangeNotificationAction() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    fileprivate func removeGameStateChangeNotificationAction() {
+        NotificationCenter.default.removeObserver(self)
     }
     
-    private func addRotateAction(action:Selector, toButton button:GameButton) {
-        button.addTarget(self, action: action, forControlEvents: UIControlEvents.TouchUpInside)
+    fileprivate func addRotateAction(_ action:Selector, toButton button:GameButton) {
+        button.addTarget(self, action: action, for: UIControlEvents.touchUpInside)
     }
     
 }
