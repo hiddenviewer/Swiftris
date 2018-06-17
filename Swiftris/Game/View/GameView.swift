@@ -16,7 +16,7 @@ class GameView: UIView {
     var rotateButton = GameButton(title: "R", frame: CGRect.zero)
     
     init(_ superView:UIView) {
-        super.init(frame: superView.frame)
+        super.init(frame: superView.bounds)
         superView.backgroundColor = UIColor(red:0.27, green:0.27, blue:0.27, alpha:1.0)
         superView.addSubview(self)
         
@@ -75,9 +75,9 @@ class GameView: UIView {
         
         self.addConstraints(
             NSLayoutConstraint.constraints(
-                withVisualFormat: "V:|-20-[gameScore]-[gameBoard]",
+                withVisualFormat: "V:|-[gameScore]-[gameBoard]",
                 options: [],
-                metrics:nil ,
+                metrics:metrics ,
                 views:views)
         )
 

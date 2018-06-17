@@ -2,7 +2,7 @@
 //  GameButton.swift
 //  Swiftris
 //
-//  Created by 김성배 on 2016. 6. 12..
+//  Created by Sungbae Kim on 2016. 6. 12..
 //  Copyright © 2016년 1minute2life. All rights reserved.
 //
 

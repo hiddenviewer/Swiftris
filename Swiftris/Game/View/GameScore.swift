@@ -77,7 +77,7 @@ class GameScore: UIView {
                                                          object: nil)
     }
     
-    func lineClear(_ noti:Notification) {
+    @objc func lineClear(_ noti:Notification) {
         if let userInfo = noti.userInfo as? [String:NSNumber] {
             if let lineCount = userInfo["lineCount"] {
                 self.lineClearCount += lineCount.intValue

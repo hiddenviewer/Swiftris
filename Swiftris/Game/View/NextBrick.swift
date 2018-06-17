@@ -33,7 +33,7 @@ class NextBrick: UIView {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func newBrickGenerated() {
+    @objc func newBrickGenerated() {
         self.setNeedsDisplay()
     }
     
@@ -126,7 +126,7 @@ class NextBrick: UIView {
         )
     }
     
-    func gameStop(_ sender:UIButton) {
+    @objc func gameStop(_ sender:UIButton) {
         NotificationCenter.default.post(
             name: Notification.Name(rawValue: Swiftris.GameStateChangeNotification),
             object: nil,
@@ -134,7 +134,7 @@ class NextBrick: UIView {
         )
     }
     
-    func changeGameState(_ sender:UIButton) {
+    @objc func changeGameState(_ sender:UIButton) {
         sender.isSelected = !sender.isSelected
         let gameState = self.update(sender.isSelected)
         
