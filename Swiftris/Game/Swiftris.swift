@@ -61,7 +61,7 @@ class Swiftris: NSObject {
         self.gameView = nil
     }
     
-    func gameStateChange(_ noti:Notification) {
+    @objc func gameStateChange(_ noti:Notification) {
         guard let userInfo = noti.userInfo as? [String:NSNumber] else { return }
         guard let rawValue = userInfo["gameState"] else { return }
         guard let toState = GameState(rawValue: rawValue.intValue) else { return }
@@ -95,7 +95,7 @@ class Swiftris: NSObject {
     }
     
     
-    func longPressed(_ longpressGesture:UILongPressGestureRecognizer) {
+    @objc func longPressed(_ longpressGesture:UILongPressGestureRecognizer) {
         if self.gameState == GameState.play {
             if longpressGesture.state == UIGestureRecognizerState.began {
                 self.gameView.gameBoard.dropBrick()
@@ -103,7 +103,7 @@ class Swiftris: NSObject {
         }
     }
 
-    func gameLoop() {
+    @objc func gameLoop() {
         self.update()
         self.gameView.setNeedsDisplay()
     }
@@ -170,7 +170,7 @@ class Swiftris: NSObject {
         }
     }
     
-    func rotateBrick() {
+    @objc func rotateBrick() {
         guard self.gameState == GameState.play else { return }
         guard let _ = self.gameView.gameBoard.currentBrick else { return }
         
